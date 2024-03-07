@@ -134,7 +134,7 @@ export function readCliArgs(argv: string[]) {
     createDockerCloud: isOsPackageDesired('docker-images') && !Boolean(flags['skip-docker-cloud']),
     createDockerUBI: isOsPackageDesired('docker-images') && !Boolean(flags['skip-docker-ubi']),
     createDockerContexts: !Boolean(flags['skip-docker-contexts']),
-    targetAllPlatforms: Boolean(flags['all-platforms']),
+    targetAllPlatforms: isOsPackageDesired('docker-images') &&  Boolean(flags['all-platforms']),
     eprRegistry: flags['epr-registry'],
   };
 
