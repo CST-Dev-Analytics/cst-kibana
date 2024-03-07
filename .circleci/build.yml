@@ -5,7 +5,6 @@ jobs:
       - image: circleci/node:14
     steps:
       - checkout
-
       # Install nvm and yarn
       - run:
           name: Install nvm and yarn
