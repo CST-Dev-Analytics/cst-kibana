@@ -19,7 +19,8 @@ jobs:
       - run:
           name: Install yarn
           command: |
-            npm install yarn@latest
+            # npm install -g yarn@latest
+            yarn install
 
       # Bootstrap the project
       - run:
