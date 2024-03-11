@@ -28,6 +28,7 @@ jobs:
       - run:
           name: Bootstrap project
           command: |
+            yarn install
             sudo yarn kbn bootstrap
             yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
 
