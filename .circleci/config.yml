@@ -28,7 +28,7 @@ jobs:
       - run:
           name: Bootstrap project
           command: |
-            yarn kbn clean
+            yarn kbn reset
             sudo yarn kbn bootstrap
 
 
