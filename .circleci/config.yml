@@ -28,14 +28,14 @@ jobs:
       - run:
           name: Bootstrap project
           command: |
-            yarn install
+            yarn kbn clean
             sudo yarn kbn bootstrap
-            yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
+
 
       # Build project distributables
-      # - run:
-      #     name: Build project distributables
-      #     command: yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
+      - run:
+          name: Build project distributables
+          command: yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
 
       # Copy build tar/zip archives
       - run:
