@@ -29,7 +29,8 @@ jobs:
           name: Bootstrap project
           command: |
             sudo yarn kbn bootstrap
-            yarn build --help
+            ls -al
+            # yarn build --help
 
 
       # Build project distributables
