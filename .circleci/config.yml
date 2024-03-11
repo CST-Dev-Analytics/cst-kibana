@@ -27,7 +27,7 @@ jobs:
       # Bootstrap the project
       - run:
           name: Bootstrap project
-          command: yarn kbn bootstrap
+          command: sudo yarn kbn bootstrap
 
       # Build project distributables
       - run:
