@@ -29,9 +29,10 @@ jobs:
           name: Bootstrap project
           command: |
             sudo yarn kbn bootstrap
-            ls -al
+            
+            ls -al ./node_modules
             # yarn build --help
-
+            yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
 
       # Build project distributables
       - run:
