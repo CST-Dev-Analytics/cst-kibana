@@ -20,8 +20,8 @@ jobs:
           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
           nvm install
           npm install -g yarn@latest
-          yarn install
-        
+          yarn kbn bootstrap
+          yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
     # - run:
     #     name: Install yarn and boostrap project
     #     command: |
