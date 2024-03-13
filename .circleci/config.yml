@@ -6,7 +6,7 @@ jobs:
   build_test:
     docker:
       - image: cimg/base:current
-    # resource_class: xlarge
+
     steps:
     - checkout
     # Install nvm
@@ -22,13 +22,12 @@ jobs:
           npm install -g yarn@latest
           yarn kbn bootstrap
           yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
-    # - run:
-    #     name: Install yarn and boostrap project
-    #     command: |
-    #       npm install -g yarn@latest
-    #       yarn install
-    #       # yarn kbn bootstrap
-    #       # yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
+    # Copy build tar/zip archives
+    - run:
+        name: Copy build tar/zip archives
+        command: |
+          mkdir -p build/kibana-docker/default-ubi8
+          cp /home/circleci/project/target/kibana-8.2.4-SNAPSHOT-linux-x86_64.tar.gz build/kibana-docker/default-ubi8
      
   build_and_push_image:
     docker:
