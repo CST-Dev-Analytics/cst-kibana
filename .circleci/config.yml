@@ -6,7 +6,6 @@ jobs:
   build_test:
     docker:
       - image: cimg/base:current
-
     steps:
     - checkout
     # Install nvm
@@ -28,7 +27,11 @@ jobs:
         command: |
           mkdir -p build/kibana-docker/default-ubi8
           cp /home/circleci/project/target/kibana-8.2.4-SNAPSHOT-linux-x86_64.tar.gz build/kibana-docker/default-ubi8
-     
+    - run:
+        name: Build custom image
+        command: |
+          docker build -t 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest .
+  
   build_and_push_image:
     docker:
       - image: cimg/node:16.14.2
