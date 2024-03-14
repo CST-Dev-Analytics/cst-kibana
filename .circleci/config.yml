@@ -28,6 +28,7 @@ jobs:
         command: |
           mkdir -p build/kibana-docker/default-ubi8
           cp /home/circleci/project/target/kibana-8.2.4-SNAPSHOT-linux-x86_64.tar.gz build/kibana-docker/default-ubi8
+          ls build/kibana-docker/default-ubi8/
     - save_cache:
         paths: [build/kibana-docker]
         key: kibana-build
@@ -43,6 +44,7 @@ jobs:
       - run:
           name: Build custom image
           command: |
+            cd build/kibana-docker/default-ubi8
             docker build -t 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest .
       - aws-cli/setup:
           aws-access-key-id: AWS_ACCESS_KEY
