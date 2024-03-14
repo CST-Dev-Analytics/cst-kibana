@@ -37,6 +37,7 @@ jobs:
        - image: cimg/aws:2023.12
     steps:
       - checkout
+      - setup_remote_docker
       - restore_cache:
           keys: [kibana-build]
       - run:
