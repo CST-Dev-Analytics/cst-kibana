@@ -52,6 +52,7 @@ jobs:
           name: AWS ECR login
           command: |
             aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 243606292720.dkr.ecr.eu-west-1.amazonaws.com
+            aws ecr describe-repositories --repository-name cst-kibana
       - run:
           name: Push image to AWS ECR
           command: |
