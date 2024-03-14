@@ -62,15 +62,20 @@ jobs:
       # Build the hello world image
       - run:
           name: Build Docker image
-          command: docker build --tag helloworld .
+          command: docker build --tag 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest .
       - aws-cli/setup:
           aws-access-key-id: AWS_ACCESS_KEY
           aws-secret-access-key: AWS_ACCESS_SECRET
           aws-region: AWS_REGION_NAME
+       # Push image to AWS ECR
       - run:
-          name: AWS ECR login
+          name: Push image to AWS ECR
           command: |
-            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 243606292720.dkr.ecr.eu-west-1.amazonaws.com
+            docker push 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest
+      # - run:
+      #     name: AWS ECR login
+      #     command: |
+      #       aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 243606292720.dkr.ecr.eu-west-1.amazonaws.com
 
   build_and_push:
     docker:
