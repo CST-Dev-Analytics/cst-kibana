@@ -8,7 +8,7 @@ jobs:
     - checkout
     # Install nvm
     - run:
-        name: Install nvm
+        name: Install nvm and build
         command: |
           set +e
           wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
@@ -17,11 +17,9 @@ jobs:
           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
           nvm install
           npm install -g yarn@latest
-    - run:
-        name: Run Yarn Commands
-        command: |
           yarn kbn bootstrap
           yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
+
     # Copy build tar/zip archives
     - run:
         name: Copy build tar/zip archives
