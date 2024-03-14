@@ -156,8 +156,7 @@ workflows:
   version: 2
   build_and_push:
     jobs:
-      - build-test
-      # - install_and_build
-      # - build_and_push_image:
-      #     requires:
-      #       - install_and_build
+      - install_and_build
+      - build_and_push_image:
+          requires:
+            - install_and_build
