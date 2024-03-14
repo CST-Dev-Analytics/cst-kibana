@@ -28,7 +28,7 @@ jobs:
         command: |
           mkdir -p build/kibana-docker/default-ubi8
           cp /home/circleci/project/target/kibana-8.2.4-SNAPSHOT-linux-x86_64.tar.gz build/kibana-docker/default-ubi8
-          ls build/kibana-docker/default-ubi8/
+          # ls build/kibana-docker/default-ubi8/
     - save_cache:
         paths: [build/kibana-docker]
         key: kibana-build
@@ -54,102 +54,12 @@ jobs:
           name: AWS ECR login
           command: |
             aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 243606292720.dkr.ecr.eu-west-1.amazonaws.com
-            aws ecr describe-repositories --repository-name cst-kibana
+            # aws ecr describe-repositories --repository-name cst-kibana
       - run:
           name: Push image to AWS ECR
           command: |
             docker push 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest
   
-  build-test:
-    docker:
-       - image: cimg/aws:2023.12
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Build custom image
-          command: |
-            docker build -t 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest .
-      - aws-cli/setup:
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-secret-access-key: AWS_ACCESS_SECRET
-          aws-region: AWS_REGION_NAME
-      - run:
-          name: AWS ECR login
-          command: |
-            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 243606292720.dkr.ecr.eu-west-1.amazonaws.com
-            aws ecr describe-repositories --repository-name cst-kibana
-      - run:
-          name: Push image to AWS ECR
-          command: |
-            docker push 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest
-  build_and_push:
-    docker:
-      - image: cimg/node:16.14.2
-    steps:
-      - checkout
-
-      # # Install nvm
-      # - run:
-      #     name: Install nvm
-      #     command: |
-      #       curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-      #       export NVM_DIR="$HOME/.nvm"
-      #       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-      #       nvm install
-
-      # Install yarn
-      # - run:
-      #     name: Install yarn and boostrap project
-      #     command: |
-      #       # npm install -g yarn@latest
-      #       yarn install
-      #       # yarn kbn bootstrap
-      #       # yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
-
-      # Bootstrap the project
-      - run:
-          name: Bootstrap project
-          command: |
-            sudo yarn kbn bootstrap
-            
-            ls -al ./node_modules
-            # yarn build --help
-            yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
-
-      # Build project distributables
-      - run:
-          name: Build project distributables
-          command: |
-            ls -al
-            yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
-          # command: yarn build --docker-images 
-
-      # Copy build tar/zip archives
-      - run:
-          name: Copy build tar/zip archives
-          command: |
-            mkdir -p build/kibana-docker/default-ubi8
-            cp target/kibana-8.2.4-SNAPSHOT-linux-x86_64.tar.gz build/kibana-docker/default-ubi8
-
-      # Build custom image
-      - run:
-          name: Build custom image
-          command: |
-            docker build -t 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest .
-
-      # AWS ECR login
-      - run:
-          name: AWS ECR login
-          command: |
-            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 243606292720.dkr.ecr.eu-west-1.amazonaws.com
-
-      # Push image to AWS ECR
-      - run:
-          name: Push image to AWS ECR
-          command: |
-            docker push 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest
-
 # Define workflows
 workflows:
 
