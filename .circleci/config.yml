@@ -75,3 +75,11 @@ workflows:
            branches:
               only:
                 - main-cst
+
+       # New job to respond to webhook events from repo B
+      - trigger_build:
+          type: approval
+          filters:
+            branches:
+              only:
+                - master  # Adjust to the branch you want to monitor in repo B
