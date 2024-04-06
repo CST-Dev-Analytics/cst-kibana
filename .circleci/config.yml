@@ -65,10 +65,10 @@ jobs:
     docker:
       - image: cimg/base:current
     steps:
-      - checkout
       - add_ssh_keys:
           fingerprints: 
             - "SHA256:eZZYYITgGlOaa/dWlovST6rUXvYDoY02TKVdqFDbwcY"
+      - checkout
       # - run:
       #     name: Avoid hosts unknown for github
       #     command: echo -e “Host github.com\n\tStrictHostKeyChecking no\n” > ~/.ssh/config
