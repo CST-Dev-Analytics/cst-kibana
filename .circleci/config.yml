@@ -21,7 +21,7 @@ jobs:
           npm install -g yarn@latest
           yarn kbn bootstrap
           yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
-
+  
     # Copy build tar/zip archives
     - run:
         name: Copy build tar/zip archives
@@ -61,25 +61,30 @@ jobs:
           command: |
             docker push 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest
   
+  pull_case_enrichment:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - checkout
+      - run:
+          name: 'checkout case enrichment'
+          command: |
+            cd plugins && \
+            git clone https://github.com/esanolad/Headlines.git
+
 # Define workflows
 workflows:
 
   version: 2
   build_and_push:
     jobs:
-      - install_and_build
-      - build_and_push_image:
-          requires:
-            - install_and_build
-          filters:
-           branches:
-              only:
-                - main-cst
-
-       # New job to respond to webhook events from repo B
-      - trigger_build:
-          type: approval
-          filters:
-            branches:
-              only:
-                - master  # Adjust to the branch you want to monitor in repo B
+      - pull_case_enrichment
+      # - install_and_build
+      # - build_and_push_image:
+      #     requires:
+      #       - install_and_build
+      #     filters:
+      #      branches:
+      #         only:
+      #           - main-cst
+      #           - feat/clone-case-enrichment #testing purpose
