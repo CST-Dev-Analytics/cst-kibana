@@ -1,22 +1,6 @@
 version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@2.0.6
-
-commands:
-  install_nvm:
-    description: Install NVM
-    steps:
-      - run:
-          name: Install nvm
-          command: |
-            set +e
-            wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-            nvm install
-            npm install -g yarn@latest
-
 jobs:
   install_and_build:
     docker:
@@ -36,7 +20,14 @@ jobs:
           npm install -g yarn@latest
           yarn kbn bootstrap
           yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
-  
+    - run:
+        name: 'checkout case enrichment'
+        command: |
+          cd plugins
+          git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git
+          cd nia-case-enrichment-kibana-plugin
+          yarn kbn bootstrap
+          yarn plugin-helpers build  
     # Copy build tar/zip archives
     - run:
         name: Copy build tar/zip archives
@@ -44,6 +35,7 @@ jobs:
           mkdir -p build/kibana-docker/default-ubi8
           cp /home/circleci/project/target/kibana-8.2.4-SNAPSHOT-linux-x86_64.tar.gz build/kibana-docker/default-ubi8
           # ls build/kibana-docker/default-ubi8/
+
     - save_cache:
         paths: [build/kibana-docker]
         key: kibana-build
@@ -52,7 +44,7 @@ jobs:
     docker:
        - image: cimg/aws:2023.12
     steps:
-      - checkout
+      # - checkout
       # activate docker
       - setup_remote_docker
       - restore_cache:
@@ -87,16 +79,8 @@ jobs:
             cd plugins
             git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git
             cd nia-case-enrichment-kibana-plugin
-            #install nvm
-            set +e
-            wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-            nvm install
-            npm install -g yarn@latest
             yarn kbn bootstrap
-            # yarn plugin-helpers build  
+            yarn plugin-helpers build  
             
 
 # Define workflows
@@ -105,13 +89,13 @@ workflows:
   version: 2
   build_and_push:
     jobs:
+      - install_and_build
       - pull_case_enrichment
-      # - install_and_build
-      # - build_and_push_image:
-      #     requires:
-      #       - install_and_build
-      #     filters:
-      #      branches:
-      #         only:
-      #           - main-cst
-      #           - feat/clone-case-enrichment #testing purpose
+      - build_and_push_image:
+          requires:
+            - install_and_build
+          filters:
+           branches:
+              only:
+                - main-cst
+                # - feat/clone-case-enrichment #testing purpose
