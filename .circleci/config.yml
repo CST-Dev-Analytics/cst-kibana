@@ -2,6 +2,21 @@ version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@2.0.6
 
+commands:
+  install_nvm:
+    description: Install NVM
+    steps:
+      - run:
+          name: Install Node.js 13.8.0
+          command: |
+            set +e
+            wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+            nvm install
+            npm install -g yarn@latest
+
 jobs:
   install_and_build:
     docker:
@@ -66,12 +81,16 @@ jobs:
       - image: cimg/base:current
     steps:
       - checkout
+      - install_nvm
       - run:
           name: 'checkout case enrichment'
           command: |
-            cd plugins && \
-            git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git && \
-            ls
+            cd plugins
+            git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git
+            cd nia-case-enrichment-kibana-plugin
+            yarn kbn bootstrap
+            yarn plugin-helpers build
+            
             
 
 # Define workflows
