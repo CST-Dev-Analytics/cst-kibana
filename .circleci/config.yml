@@ -72,7 +72,7 @@ jobs:
       - run:
           name: 'checkout case enrichment'
           command: |
-            ls ~/.ssh
+            ls ~/.ssh/id_rsa_fingerprint
             # cd plugins && \
             # GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_fingerprint'
             # git clone https://github.com/CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git && \
