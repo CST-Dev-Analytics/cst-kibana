@@ -7,7 +7,7 @@ commands:
     description: Install NVM
     steps:
       - run:
-          name: Install Node.js 13.8.0
+          name: Install nvm
           command: |
             set +e
             wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
@@ -81,16 +81,22 @@ jobs:
       - image: cimg/base:current
     steps:
       - checkout
-      - install_nvm
       - run:
           name: 'checkout case enrichment'
           command: |
             cd plugins
             git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git
             cd nia-case-enrichment-kibana-plugin
+            #install nvm
+            set +e
+            wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+            nvm install
+            npm install -g yarn@latest
             yarn kbn bootstrap
-            yarn plugin-helpers build
-            
+            yarn plugin-helpers build  
             
 
 # Define workflows
