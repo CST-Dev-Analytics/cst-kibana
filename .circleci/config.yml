@@ -74,7 +74,8 @@ jobs:
           command: |
             cd plugins && \
             # GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_fingerprint'
-            git clone https://github.com/CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git && \
+            #git clone https://github.com/CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git && \
+            git clone https://github.com/esanolad/currency-exchange-microservice.git && \
             ls
 
 # Define workflows
