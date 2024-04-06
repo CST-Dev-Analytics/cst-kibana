@@ -65,21 +65,12 @@ jobs:
     docker:
       - image: cimg/base:current
     steps:
-      # - add_ssh_keys:
-      #     fingerprints: 
-      #       - "SHA256:eZZYYITgGlOaa/dWlovST6rUXvYDoY02TKVdqFDbwcY"
       - checkout
-      # - run:
-      #     name: Avoid hosts unknown for github
-      #     command: echo -e “Host github.com\n\tStrictHostKeyChecking no\n” > ~/.ssh/config
       - run:
           name: 'checkout case enrichment'
           command: |
             cd plugins && \
-            # GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_fingerprint'
-            # git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git && \
-            git clone git@github.com:CST-Dev-Analytics/dms-nifi.git && \
-            #git clone https://github.com/CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git && \
+            git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git && \
             ls
             
 
