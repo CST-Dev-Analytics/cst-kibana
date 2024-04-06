@@ -90,7 +90,6 @@ workflows:
   build_and_push:
     jobs:
       - install_and_build
-      - pull_case_enrichment
       - build_and_push_image:
           requires:
             - install_and_build
