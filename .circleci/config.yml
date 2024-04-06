@@ -96,7 +96,7 @@ jobs:
             nvm install
             npm install -g yarn@latest
             yarn kbn bootstrap
-            yarn plugin-helpers build  
+            # yarn plugin-helpers build  
             
 
 # Define workflows
