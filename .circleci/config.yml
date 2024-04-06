@@ -70,7 +70,8 @@ jobs:
           name: 'checkout case enrichment'
           command: |
             cd plugins && \
-            git clone https://github.com/esanolad/Headlines.git
+            git clone https://github.com/CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git && \
+            ls
 
 # Define workflows
 workflows:
