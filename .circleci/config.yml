@@ -19,6 +19,7 @@ jobs:
           nvm install
           npm install -g yarn@latest
           which yarn
+          pwd
           # yarn kbn bootstrap
           # yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
     - run:
@@ -27,7 +28,8 @@ jobs:
           cd plugins
           git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git
           cd nia-case-enrichment-kibana-plugin
-          which yarn
+          pwd
+          # which yarn
           # yarn kbn bootstrap
           # yarn plugin-helpers build  
     # Copy build tar/zip archives
