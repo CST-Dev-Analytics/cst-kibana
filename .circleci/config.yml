@@ -69,9 +69,9 @@ jobs:
       - add_ssh_keys:
           fingerprints: 
             - "SHA256:eZZYYITgGlOaa/dWlovST6rUXvYDoY02TKVdqFDbwcY"
-      - run:
-          name: Avoid hosts unknown for github
-          command: echo -e “Host github.com\n\tStrictHostKeyChecking no\n” > ~/.ssh/config
+      # - run:
+      #     name: Avoid hosts unknown for github
+      #     command: echo -e “Host github.com\n\tStrictHostKeyChecking no\n” > ~/.ssh/config
       - run:
           name: 'checkout case enrichment'
           command: |
