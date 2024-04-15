@@ -61,7 +61,6 @@ jobs:
           command: |
             docker push 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest
             
-  
 # Define workflows
 workflows:
 
