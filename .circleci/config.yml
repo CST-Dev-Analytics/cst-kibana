@@ -20,20 +20,20 @@ jobs:
           npm install -g yarn@latest
           yarn kbn bootstrap
           yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
+          # cd plugins
+          # git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git
+          # cd nia-case-enrichment-kibana-plugin
+          # yarn install
+          # yarn kbn bootstrap
+          # yarn plugin-helpers build  
+    - run:
+        name: 'checkout case enrichment'
+        command: |
           cd plugins
           git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git
           cd nia-case-enrichment-kibana-plugin
-          yarn install
-          yarn kbn bootstrap
-          yarn plugin-helpers build  
-    # - run:
-    #     name: 'checkout case enrichment'
-    #     command: |
-    #       cd plugins
-    #       git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git
-    #       cd nia-case-enrichment-kibana-plugin
-    #       # yarn kbn bootstrap
-    #       # yarn plugin-helpers build  
+          # yarn kbn bootstrap
+          # yarn plugin-helpers build  
     # Copy build tar/zip archives
     - run:
         name: Copy build tar/zip archives
