@@ -23,6 +23,7 @@ jobs:
           cd plugins
           git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git
           cd nia-case-enrichment-kibana-plugin
+          git checkout develop
           yarn install
           yarn kbn bootstrap
           yarn plugin-helpers build  
