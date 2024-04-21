@@ -45,7 +45,7 @@ jobs:
           aws-region: AWS_REGION_NAME
       - aws-s3/copy:
           arguments: '--dryrun'
-          from: plugins/build/caseEnrichment-8.2.4.zip
+          from: /home/circleci/project/plugins/build/caseEnrichment-8.2.4.zip
           to: s3://cst-custom-plugins
 
 
