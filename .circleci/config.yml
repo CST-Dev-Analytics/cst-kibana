@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@2.0.6
+  aws-s3: circleci/aws-s3@4.0.0
 jobs:
   build_plugin:
     docker:
@@ -28,6 +29,26 @@ jobs:
           yarn plugin-helpers build  
           ls build/caseEnrichment-8.2.4.zip
           # tranfer the file to cstproj use release https://github.com/CST-Dev-Analytics/cst_proj/tree/main/kibana/plugins
+    - save_cache:
+        paths: [plugins/build]
+        key: kibana-plugin-build
+    
+  push_plugin_image:
+    docker:
+       - image: cimg/aws:2023.12
+    steps:
+      - restore_cache:
+          keys: [kibana-plugin-build]
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-secret-access-key: AWS_ACCESS_SECRET
+          aws-region: AWS_REGION_NAME
+      - aws-s3/copy:
+          arguments: '--dryrun'
+          from: plugins/build/caseEnrichment-8.2.4.zip
+          to: s3://cst-custom-plugins
+
+
   install_and_build:
     docker:
       - image: cimg/base:current
@@ -46,15 +67,6 @@ jobs:
           npm install -g yarn@latest
           yarn kbn bootstrap
           yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
-    # - run:
-    #     name: 'checkout case enrichment'
-    #     command: |
-    #       cd plugins
-    #       git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git
-    #       cd nia-case-enrichment-kibana-plugin
-    #       yarn kbn bootstrap
-    #       # yarn plugin-helpers build  
-    # Copy build tar/zip archives
     - run:
         name: Copy build tar/zip archives
         command: |
@@ -94,24 +106,23 @@ jobs:
           command: |
             docker push 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest
   
-  pull_case_enrichment:
-    docker:
-      - image: cimg/base:current
-    steps:
-      - checkout
-      - run:
-          name: 'checkout case enrichment'
-          command: |
-            cd plugins
-            git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git
-            cd nia-case-enrichment-kibana-plugin
-            yarn kbn bootstrap
-            yarn plugin-helpers build  
+  # pull_case_enrichment:
+  #   docker:
+  #     - image: cimg/base:current
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: 'checkout case enrichment'
+  #         command: |
+  #           cd plugins
+  #           git clone git@github.com:CST-Dev-Analytics/nia-case-enrichment-kibana-plugin.git
+  #           cd nia-case-enrichment-kibana-plugin
+  #           yarn kbn bootstrap
+  #           yarn plugin-helpers build  
             
 
 # Define workflows
 workflows:
-
   version: 2
   build_and_push:
     jobs:
@@ -120,6 +131,10 @@ workflows:
             branches:
                 only:
                   - feat/clone-case-enrichment #testing purpose
+      - push_plugin_image:
+          requires:
+            - build_plugin
+
       - install_and_build:
           filters:
             branches:
@@ -132,4 +147,3 @@ workflows:
            branches:
               only:
                 - main-cst
-                # - feat/clone-case-enrichment #testing purpose
