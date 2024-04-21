@@ -44,9 +44,9 @@ jobs:
           aws-secret-access-key: AWS_ACCESS_SECRET
           aws-region: AWS_REGION_NAME
       - aws-s3/sync:
-          arguments: |
-            --acl public-read \
-            --cache-control "max-age=86400"
+          # arguments: |
+          #   --acl public-read \
+          #   --cache-control "max-age=86400"
           from: bucket
           to: s3:/cst-custom-plugins/prefix
       - aws-s3/copy:
