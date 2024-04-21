@@ -30,7 +30,7 @@ jobs:
           ls build/caseEnrichment-8.2.4.zip
           # tranfer the file to cstproj use release https://github.com/CST-Dev-Analytics/cst_proj/tree/main/kibana/plugins
     - save_cache:
-        paths: [plugins/build]
+        paths: [plugins/nia-case-enrichment-kibana-plugin/build]
         key: kibana-plugin-build
     
   push_plugin_image:
@@ -39,13 +39,18 @@ jobs:
     steps:
       - restore_cache:
           keys: [kibana-plugin-build]
+      - run:
+          name: check file
+          command: |
+            cd plugins/nia-case-enrichment-kibana-plugin/build
+            ls -l
       - aws-cli/setup:
           aws-access-key-id: AWS_ACCESS_KEY
           aws-secret-access-key: AWS_ACCESS_SECRET
           aws-region: AWS_REGION_NAME
       - aws-s3/copy:
           arguments: '--dryrun'
-          from: /home/circleci/project/plugins/build/caseEnrichment-8.2.4.zip
+          from: plugins/nia-case-enrichment-kibana-plugin/build/caseEnrichment-8.2.4.zip
           to: s3://cst-custom-plugins
 
 
