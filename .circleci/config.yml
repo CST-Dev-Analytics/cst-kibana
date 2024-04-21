@@ -150,8 +150,8 @@ workflows:
       #           only:
       #             - feat/clone-case-enrichment #testing purpose
       - push_plugin_image:
-          requires:
-            - build_plugin
+          # requires:
+          #   - build_plugin
           filters:
             branches:
                 only:
