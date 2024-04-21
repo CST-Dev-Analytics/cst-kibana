@@ -31,14 +31,14 @@ jobs:
           # tranfer the file to cstproj use release https://github.com/CST-Dev-Analytics/cst_proj/tree/main/kibana/plugins
     - save_cache:
         paths: [plugins/nia-case-enrichment-kibana-plugin/build]
-        key: kibana-plugin-build
+        key: kibana-plugins-build
     
   push_plugin_image:
     docker:
        - image: cimg/aws:2023.12
     steps:
       - restore_cache:
-          keys: [kibana-plugin-build]
+          keys: [kibana-plugins-build]
       - run:
           name: check file
           command: |
