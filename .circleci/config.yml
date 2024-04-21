@@ -39,17 +39,11 @@ jobs:
     steps:
       - restore_cache:
           keys: [kibana-plugins-build]
-      - run:
-          name: check file
-          command: |
-            cd plugins/nia-case-enrichment-kibana-plugin/build
-            ls -l
       - aws-cli/setup:
           aws-access-key-id: AWS_ACCESS_KEY
           aws-secret-access-key: AWS_ACCESS_SECRET
           aws-region: AWS_REGION_NAME
       - aws-s3/copy:
-          arguments: '--dryrun'
           from: plugins/nia-case-enrichment-kibana-plugin/build/caseEnrichment-8.2.4.zip
           to: s3://cst-custom-plugins
 
