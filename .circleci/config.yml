@@ -51,6 +51,20 @@ jobs:
           command: |
             aws s3 cp plugins/nia-case-enrichment-kibana-plugin/build/caseEnrichment-8.2.4.zip s3://cst-custom-plugins/
 
+  trigger-cst-proj:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - checkout
+      - run:
+          # trigger cst_kibana
+          name: 'Trigger CST kibana'
+          command: |
+            curl --location --request POST 'https://circleci.com/api/v2/project/github/CST-Dev-Analytics/cst_proj/pipeline' \
+            --header 'Content-Type: application/json' \
+            --data '{"branch":"develop"}' \
+            -u "${API_TOKEN}:"
+
   install_and_build:
     docker:
       - image: cimg/base:current
@@ -117,14 +131,22 @@ workflows:
           filters:
             branches:
                 only:
-                  - feat/clone-case-enrichment #testing purpose
+                  - feat/clone-case-enrichment 
       - push_plugin_image:
           requires:
             - build_plugin
           filters:
             branches:
                 only:
-                  - feat/clone-case-enrichment #testing purpose
+                  - feat/clone-case-enrichment 
+      - trigger-cst-proj:
+          requires:
+            - push_plugin_image
+          filters:
+            branches:
+                only:
+                  - feat/clone-case-enrichment 
+
       - install_and_build:
           filters:
             branches:
