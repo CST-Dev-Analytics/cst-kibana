@@ -31,14 +31,14 @@ jobs:
           # tranfer the file to cstproj use release https://github.com/CST-Dev-Analytics/cst_proj/tree/main/kibana/plugins
     - save_cache:
         paths: [plugins/nia-case-enrichment-kibana-plugin/build]
-        key: kibana-plugins-build
+        key: kibana-plugins-build-${CIRCLE_BUILD_NUM}
 
   push_plugin_image:
     docker:
       - image: circleci/python:3.8
     steps:
       - restore_cache:
-          keys: [kibana-plugins-build]
+          key: kibana-plugins-build-${CIRCLE_BUILD_NUM}
       # Install AWS CLI
       - run:
           name: Install AWS CLI
