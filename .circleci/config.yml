@@ -31,7 +31,7 @@ jobs:
           # ls build/kibana-docker/default-ubi8/
     - save_cache:
         paths: [build/kibana-docker]
-        key: kibana-build
+        key: $CIRCLE_WORKFLOW_ID
   
   build_and_push_image:
     docker:
@@ -41,7 +41,7 @@ jobs:
       # activate docker
       - setup_remote_docker
       - restore_cache:
-          keys: [kibana-build]
+          key: $CIRCLE_WORKFLOW_ID
       - run:
           name: Build custom image
           command: |
