@@ -30,9 +30,22 @@ jobs:
           yarn plugin-helpers build  
           ls build/caseEnrichment-8.2.4.zip
           # tranfer the file to cstproj use release https://github.com/CST-Dev-Analytics/cst_proj/tree/main/kibana/plugins
-    - save_cache:
-        paths: [plugins/nia-case-enrichment-kibana-plugin/build]
-        key: $CIRCLE_WORKFLOW_ID
+    # Install AWS CLI
+    - run:
+        name: Install AWS CLI
+        command: |
+          sudo apt-get update && sudo apt-get install -y python3-pip
+          sudo pip3 install awscli
+      # Copy files to S3
+    - run:
+        name: Copy files to S3
+        command: |
+          aws s3 cp plugins/nia-case-enrichment-kibana-plugin/build/caseEnrichment-8.2.4.zip s3://cst-custom-plugins/
+
+
+    # - save_cache:
+    #     paths: [plugins/nia-case-enrichment-kibana-plugin/build]
+    #     key: $CIRCLE_WORKFLOW_ID
 
   push_plugin_image:
     docker:
@@ -133,13 +146,13 @@ workflows:
             branches:
                 only:
                   - feat/clone-case-enrichment 
-      - push_plugin_image:
-          requires:
-            - build_plugin
-          filters:
-            branches:
-                only:
-                  - feat/clone-case-enrichment 
+      # - push_plugin_image:
+      #     requires:
+      #       - build_plugin
+      #     filters:
+      #       branches:
+      #           only:
+      #             - feat/clone-case-enrichment 
       - trigger-cst-proj:
           requires:
             - push_plugin_image
