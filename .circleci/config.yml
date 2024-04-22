@@ -12,6 +12,7 @@ jobs:
     - run:
         name: Install nvm and build
         command: |
+          echo ${CIRCLE_WORKFLOW_ID}
           set +e
           wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
           export NVM_DIR="$HOME/.nvm"
@@ -31,14 +32,14 @@ jobs:
           # tranfer the file to cstproj use release https://github.com/CST-Dev-Analytics/cst_proj/tree/main/kibana/plugins
     - save_cache:
         paths: [plugins/nia-case-enrichment-kibana-plugin/build]
-        key: kibana-plugins-build-${CIRCLE_BUILD_NUM}
+        key: $CIRCLE_WORKFLOW_ID
 
   push_plugin_image:
     docker:
       - image: circleci/python:3.8
     steps:
       - restore_cache:
-          key: kibana-plugins-build-${CIRCLE_BUILD_NUM}
+          key: $CIRCLE_WORKFLOW_ID
       # Install AWS CLI
       - run:
           name: Install AWS CLI
