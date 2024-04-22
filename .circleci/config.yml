@@ -159,7 +159,7 @@ workflows:
           filters:
             branches:
                 only:
-                  - feat/clone-case-enrichment 
+                  - build_plugin
 
       - install_and_build:
           filters:
