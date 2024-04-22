@@ -155,11 +155,11 @@ workflows:
       #             - feat/clone-case-enrichment 
       - trigger-cst-proj:
           requires:
-            - push_plugin_image
+            - build_plugin
           filters:
             branches:
                 only:
-                  - build_plugin
+                  - feat/clone-case-enrichment 
 
       - install_and_build:
           filters:
