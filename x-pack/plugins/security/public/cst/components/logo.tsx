@@ -22,7 +22,7 @@ export const CSTLogoIcon: React.FC<Props> = ({ size = 'small' }) => {
 
   return (
     <img
-      src="https://res.cloudinary.com/dzghxcq0j/image/upload/v1708402318/cst/cst-logo.svg"
+      src="https://res.cloudinary.com/dzghxcq0j/image/upload/v1737621505/cst/nsalogo-removebg-preview_ryxlox.png"
       style={{ width: logoSize, height: logoSize, margin: 'auto' }}
     />
   );
