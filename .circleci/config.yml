@@ -19,7 +19,9 @@ jobs:
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
           nvm install
+          npm ci
           npm install -g yarn@latest
+          npx browserslist@latest --update-db
           yarn kbn bootstrap
           yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
 
