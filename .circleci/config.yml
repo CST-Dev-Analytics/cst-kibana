@@ -34,34 +34,6 @@ jobs:
     - save_cache:
         paths: [build/kibana-docker]
         key: $CIRCLE_WORKFLOW_ID
-  
-  test_aws_login:
-    docker:
-       - image: cimg/aws:2023.12
-    steps:
-      # - checkout
-      # # activate docker
-      # - setup_remote_docker
-      # - restore_cache:
-      #     key: $CIRCLE_WORKFLOW_ID
-      # - run:
-      #     name: Build custom image
-      #     command: |
-      #       cd build/kibana-docker/default-ubi8
-      #       docker build -t 195981443761.dkr.ecr.eu-west-1.amazonaws.com/onsa/kibana:latest .
-      # - aws-cli/setup:
-      #     aws-access-key-id: AWS_ACCESS_KEY_CST
-      #     aws-secret-access-key: AWS_ACCESS_SECRET_CST
-      #     aws-region: AWS_REGION_NAME
-      - run:
-          name: AWS ECR login
-          command: |
-            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 195981443761.dkr.ecr.eu-west-1.amazonaws.com
-            # aws ecr describe-repositories --repository-name cst-kibana
-      # - run:
-      #     name: Push image to AWS ECR
-      #     command: |
-      #       docker push 195981443761.dkr.ecr.eu-west-1.amazonaws.com/onsa/kibana:latest
 
   build_and_push_image:
     docker:
@@ -77,15 +49,11 @@ jobs:
           command: |
             cd build/kibana-docker/default-ubi8
             docker build -t 195981443761.dkr.ecr.eu-west-1.amazonaws.com/onsa/kibana:latest .
-      - aws-cli/setup:
-          aws-access-key-id: AWS_ACCESS_KEY_CST
-          aws-secret-access-key: AWS_ACCESS_SECRET_CST
-          aws-region: AWS_REGION_NAME
+
       - run:
           name: AWS ECR login
           command: |
             aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 195981443761.dkr.ecr.eu-west-1.amazonaws.com
-            # aws ecr describe-repositories --repository-name cst-kibana
       - run:
           name: Push image to AWS ECR
           command: |
@@ -97,21 +65,12 @@ workflows:
   version: 2
   build_and_push:
     jobs:
-      - test_aws_login
-      # - install_and_build
-      # - build_and_push_image:
-      #     requires:
-      #       - install_and_build
-      #     filters:
-      #      branches:
-      #         only:
-      #           - pipeline-onsa
-      #           - main-onsa
-
-       # New job to respond to webhook events from repo B
-      - trigger_build:
-          type: approval
+      - install_and_build
+      - build_and_push_image:
+          requires:
+            - install_and_build
           filters:
-            branches:
+           branches:
               only:
-                - master  # Adjust to the branch you want to monitor in repo B
+                - pipeline-onsa
+                - main-onsa
