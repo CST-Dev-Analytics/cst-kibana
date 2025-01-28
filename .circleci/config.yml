@@ -72,5 +72,4 @@ workflows:
           filters:
            branches:
               only:
-                - pipeline-onsa
                 - main-onsa
