@@ -6,11 +6,13 @@ jobs:
   install_and_build:
     docker:
       - image: cimg/base:current
+    resource_class: large
     steps:
     - checkout
     # Install nvm
     - run:
         name: Install nvm and build
+        no_output_timeout: 20m
         command: |
           set +e
           wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
@@ -32,7 +34,7 @@ jobs:
     - save_cache:
         paths: [build/kibana-docker]
         key: $CIRCLE_WORKFLOW_ID
-  
+
   build_and_push_image:
     docker:
        - image: cimg/aws:2023.12
@@ -46,20 +48,16 @@ jobs:
           name: Build custom image
           command: |
             cd build/kibana-docker/default-ubi8
-            docker build -t 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest .
-      - aws-cli/setup:
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-secret-access-key: AWS_ACCESS_SECRET
-          aws-region: AWS_REGION_NAME
+            docker build -t 195981443761.dkr.ecr.eu-west-1.amazonaws.com/onsa/kibana:latest .
+
       - run:
           name: AWS ECR login
           command: |
-            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 243606292720.dkr.ecr.eu-west-1.amazonaws.com
-            # aws ecr describe-repositories --repository-name cst-kibana
+            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 195981443761.dkr.ecr.eu-west-1.amazonaws.com
       - run:
           name: Push image to AWS ECR
           command: |
-            docker push 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest
+            docker push 195981443761.dkr.ecr.eu-west-1.amazonaws.com/onsa/kibana:latest
             
 # Define workflows
 workflows:
@@ -74,12 +72,4 @@ workflows:
           filters:
            branches:
               only:
-                - main-cst
-
-       # New job to respond to webhook events from repo B
-      - trigger_build:
-          type: approval
-          filters:
-            branches:
-              only:
-                - master  # Adjust to the branch you want to monitor in repo B
+                - main-onsa
