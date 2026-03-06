@@ -8,13 +8,13 @@
 
 /* eslint-disable jsx-a11y/alt-text */
 
-import React, { useMemo } from 'react';
+import React, {useMemo} from 'react';
 
 interface Props {
   size?: string;
 }
 
-export const CSTLogoIcon: React.FC<Props> = ({ size = 'small' }) => {
+export const CSTLogoIcon: React.FC<Props> = ({size = 'small'}) => {
   const logoSize = useMemo(() => {
     if (size === 'small') return 35;
     else if (size === 'medium') return 50;
@@ -24,7 +24,8 @@ export const CSTLogoIcon: React.FC<Props> = ({ size = 'small' }) => {
   return (
     <img
       src="https://res.cloudinary.com/dzghxcq0j/image/upload/v1708402318/cst/cst-logo.svg"
-      style={{ width: logoSize, height: logoSize, margin: 'auto' }}
+      alt="CST Logo"
+      style={{width: logoSize, height: logoSize, margin: 'auto'}}
     />
   );
 };

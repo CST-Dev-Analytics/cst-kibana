@@ -16,14 +16,15 @@ interface Props {
 
 export const CSTLogoIcon: React.FC<Props> = ({ size = 'small' }) => {
   const logoSize = useMemo(() => {
-    if (size === 'small') return 35;
-    else if (size === 'medium') return 50;
+    if (size === 'small') return 45;
+    else if (size === 'medium') return 60;
     else return 80;
   }, [size]);
 
   return (
     <img
-      src="https://res.cloudinary.com/dzghxcq0j/image/upload/v1708402318/cst/cst-logo.svg"
+      src="https://res.cloudinary.com/dywofwzdx/image/upload/v1772723561/CST_LOGO_SVG2_3_White_ejerh7.svg"
+      alt="CST Logo"
       style={{ width: logoSize, height: logoSize, margin: 'auto' }}
     />
   );
