@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+  workflow_dispatch:
+
+jobs:
+  install_and_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16.14.2'
+
+      - name: Cache Yarn and npm
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/yarn
+            ~/.npm
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Yarn
+        run: npm install -g yarn@1.22.19
+
+      - name: Install dependencies and bootstrap
+        run: yarn kbn bootstrap
+
+      - name: Build Kibana (docker images)
+        env:
+          XDG_CACHE_HOME: ${{ runner.temp }}
+        run: yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: kibana-docker
+          path: build/kibana-docker/default-ubi8
+
+  build_and_push_image:
+    runs-on: ubuntu-latest
+    needs: install_and_build
+    if: github.ref == 'refs/heads/main-cst'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: kibana-docker
+          path: build/kibana-docker
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION_NAME }}
+
+      - name: Build Docker image
+        run: |
+          cd build/kibana-docker/default-ubi8
+          docker build -t 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest .
+
+      - name: Login to ECR
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION_NAME }} | docker login --username AWS --password-stdin 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana
+
+      - name: Push image to ECR
+        run: |
+          docker push 243606292720.dkr.ecr.eu-west-1.amazonaws.com/cst-kibana:latest
