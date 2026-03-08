@@ -54,11 +54,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download build artifact
+      - name: Download build artifact (if available)
         uses: actions/download-artifact@v4
         with:
           name: kibana-docker
           path: build/kibana-docker
+
+      - name: Setup Node.js (for fallback build)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16.14.2'
+
+      - name: Install Yarn (for fallback build)
+        run: npm install -g yarn@1.22.19
+
+      - name: Ensure build artifact exists (use artifact or build locally)
+        env:
+          XDG_CACHE_HOME: ${{ runner.temp }}
+        run: |
+          if [ -d build/kibana-docker/default-ubi8 ]; then
+            echo "Found uploaded build artifact, skipping local build"
+            ls -la build/kibana-docker/default-ubi8 || true
+          else
+            echo "Artifact not found, running local bootstrap and build"
+            yarn kbn bootstrap
+            yarn build --docker-images --skip-os-packages --skip-docker-ubuntu
+            ls -la build/kibana-docker/default-ubi8 || true
+          fi
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
